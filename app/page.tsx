@@ -5,14 +5,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { 
   Search, 
-  ArrowRight, 
+  ChevronDown, 
   Globe, 
   ArrowUpDown, 
   Smartphone, 
   QrCode, 
   Sparkles,
-  MapPin,
-  ChevronRight
+  MapPin
 } from 'lucide-react';
 
 interface Destination {
@@ -20,108 +19,169 @@ interface Destination {
   flag: string;
   slug: string;
   priceEUR: string;
-  priceUSD: string;
 }
 
 export default function HomePage() {
   const router = useRouter();
   const [query, setQuery] = useState('');
-  const [isOpen, setIsOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'popular' | 'local' | 'regional' | 'global'>('popular');
 
   const popularLocations: Destination[] = [
-    { name: 'Netherlands', flag: '🇳🇱', slug: 'netherlands', priceEUR: '4.00 €', priceUSD: '$4.50' },
-    { name: 'Turkey', flag: '🇹🇷', slug: 'turkey', priceEUR: '4.00 €', priceUSD: '$4.50' },
-    { name: 'United States', flag: '🇺🇸', slug: 'united-states', priceEUR: '4.00 €', priceUSD: '$4.50' },
-    { name: 'Thailand', flag: '🇹🇭', slug: 'thailand', priceEUR: '4.00 €', priceUSD: '$4.50' },
-    { name: 'Italy', flag: '🇮🇹', slug: 'italy', priceEUR: '4.00 €', priceUSD: '$4.50' },
-    { name: 'Spain', flag: '🇪🇸', slug: 'spain', priceEUR: '4.00 €', priceUSD: '$4.50' },
-    { name: 'Indonesia', flag: '🇮🇩', slug: 'indonesia', priceEUR: '4.00 €', priceUSD: '$4.50' },
-    { name: 'United Kingdom', flag: '🇬🇧', slug: 'united-kingdom', priceEUR: '4.00 €', priceUSD: '$4.50' },
-    { name: 'China', flag: '🇨🇳', slug: 'china', priceEUR: '4.00 €', priceUSD: '$4.50' },
-    { name: 'Japan', flag: '🇯🇵', slug: 'japan', priceEUR: '4.00 €', priceUSD: '$4.50' },
-    { name: 'Albania', flag: '🇦🇱', slug: 'albania', priceEUR: '4.00 €', priceUSD: '$4.50' },
-    { name: 'Egypt', flag: '🇪🇬', slug: 'egypt', priceEUR: '5.00 €', priceUSD: '$5.50' },
+    { name: 'Netherlands', flag: '🇳🇱', slug: 'netherlands', priceEUR: '4.00 €' },
+    { name: 'Turkey', flag: '🇹🇷', slug: 'turkey', priceEUR: '4.00 €' },
+    { name: 'United States', flag: '🇺🇸', slug: 'united-states', priceEUR: '4.00 €' },
+    { name: 'Thailand', flag: '🇹🇭', slug: 'thailand', priceEUR: '4.00 €' },
+    { name: 'Italy', flag: '🇮🇹', slug: 'italy', priceEUR: '4.00 €' },
+    { name: 'Spain', flag: '🇪🇸', slug: 'spain', priceEUR: '4.00 €' },
+    { name: 'Indonesia', flag: '🇮🇩', slug: 'indonesia', priceEUR: '4.00 €' },
+    { name: 'United Kingdom', flag: '🇬🇧', slug: 'united-kingdom', priceEUR: '4.00 €' },
+    { name: 'China', flag: '🇨🇳', slug: 'china', priceEUR: '4.00 €' },
+    { name: 'Japan', flag: '🇯🇵', slug: 'japan', priceEUR: '4.00 €' },
+    { name: 'Albania', flag: '🇦🇱', slug: 'albania', priceEUR: '4.00 €' },
+    { name: 'Egypt', flag: '🇪🇬', slug: 'egypt', priceEUR: '5.00 €' },
+  ];
+
+  const regionalLocations = [
+    { name: 'Africa', slug: 'africa' },
+    { name: 'Africa Safari', slug: 'africa-safari' },
+    { name: 'Asia', slug: 'asia' },
+    { name: 'Caribbean Islands', slug: 'caribbean-islands' },
+    { name: 'Europe', slug: 'europe' },
+    { name: 'European Union and United Kingdom', slug: 'eu-uk' },
+    { name: 'Latin America', slug: 'latin-america' },
+    { name: 'Middle East and North Africa', slug: 'mena' },
+    { name: 'North America', slug: 'north-america' },
+    { name: 'Oceania', slug: 'oceania' },
+    { name: 'Global', slug: 'global' },
   ];
 
   const filtered = query.trim() === ''
-    ? []
+    ? popularLocations
     : popularLocations.filter((item) => item.name.toLowerCase().includes(query.toLowerCase()));
 
   const handleSelect = (slug: string) => {
     setQuery('');
-    setIsOpen(false);
+    setIsDropdownOpen(false);
     router.push(`/esim/${slug}`);
   };
 
   return (
     <div className="bg-[#FAF7F2] min-h-screen text-slate-800 font-sans tracking-tight pb-20">
       
-      {/* HERO SECTION WITH SEARCH */}
-      <section className="pt-14 pb-10 px-6 max-w-4xl mx-auto text-center space-y-5">
-        <h1 className="text-3xl md:text-5xl font-black tracking-tight leading-tight text-slate-900">
-          Stay connected, wherever you travel, at affordable rates
-        </h1>
-        <p className="text-slate-600 font-medium text-sm md:text-base">
-          Compare eSIM data packages for 200+ countries and regions.
-        </p>
+      {/* FULL-WIDTH SEARCH BAR SECTION WITH SIDE LINES */}
+      <section className="pt-12 pb-8 px-6 max-w-7xl mx-auto">
+        <div className="flex items-center gap-4">
+          {/* Decorative Left Line */}
+          <div className="flex-1 h-[1px] bg-slate-300 hidden sm:block" />
 
-        {/* Hero Search Bar */}
-        <div className="max-w-xl mx-auto pt-3 relative">
-          <div className="flex items-center bg-white rounded-full p-2.5 pl-6 shadow-md border border-slate-200">
-            <Search className="w-5 h-5 text-slate-400 mr-3 shrink-0" />
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => {
-                setQuery(e.target.value);
-                setIsOpen(true);
-              }}
-              onFocus={() => setIsOpen(true)}
-              placeholder="Search 200+ countries and regions..."
-              className="w-full bg-transparent outline-none text-sm text-slate-900 font-medium placeholder:text-slate-400"
-            />
-            <button
-              onClick={() => {
-                if (filtered.length > 0) handleSelect(filtered[0].slug);
-              }}
-              className="bg-sky-500 hover:bg-sky-600 text-white rounded-full px-5 py-2 text-xs font-bold transition shrink-0 flex items-center space-x-1"
-            >
-              <span>Search</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+          {/* Full Width Search Container */}
+          <div className="relative flex-1 max-w-5xl">
+            <div className="flex items-center bg-white rounded-full border border-slate-300 shadow-sm focus-within:border-slate-400 transition-all overflow-hidden">
+              
+              {/* Left Search Input */}
+              <div className="flex items-center flex-1 px-5 py-3.5">
+                <Search className="w-5 h-5 text-slate-800 mr-3 shrink-0" />
+                <input
+                  type="text"
+                  value={query}
+                  onChange={(e) => {
+                    setQuery(e.target.value);
+                    setIsDropdownOpen(true);
+                  }}
+                  onFocus={() => setIsDropdownOpen(true)}
+                  placeholder="Where do you need an eSIM?"
+                  className="w-full bg-transparent outline-none text-base font-bold text-slate-900 placeholder:text-slate-900 placeholder:font-bold"
+                />
+              </div>
+
+              {/* Right Dropdown Toggle Button */}
+              <button
+                type="button"
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="flex items-center space-x-2 border-l border-slate-200 px-6 py-3.5 hover:bg-slate-50 text-slate-900 font-extrabold text-sm shrink-0 transition"
+              >
+                <span>Locations</span>
+                <ChevronDown className={`w-4 h-4 text-slate-800 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+            </div>
+
+            {/* SCREENSHOT 2: DUAL PANEL DROPDOWN MENU */}
+            {isDropdownOpen && (
+              <div className="absolute top-full left-0 right-0 mt-3 bg-[#F7F4EE] rounded-3xl shadow-2xl border border-slate-200/80 overflow-hidden z-50 p-6 flex flex-col md:flex-row gap-6">
+                
+                {/* Left Panel: Popular Locations */}
+                <div className="flex-1 flex flex-col justify-between">
+                  <div>
+                    <h3 className="text-lg font-black text-slate-900 mb-5">Popular locations</h3>
+                    
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3.5">
+                      {filtered.slice(0, 12).map((item) => (
+                        <button
+                          key={item.slug}
+                          onClick={() => handleSelect(item.slug)}
+                          className="flex items-center space-x-3 text-left hover:text-sky-600 transition group"
+                        >
+                          <span className="text-xl shrink-0">{item.flag}</span>
+                          <span className="text-sm font-bold text-slate-900 group-hover:text-sky-600">
+                            {item.name}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Explore eSIM Store Action Button */}
+                  <div className="pt-8">
+                    <Link
+                      href="/destinations"
+                      onClick={() => setIsDropdownOpen(false)}
+                      className="inline-block bg-white hover:bg-slate-100 border border-slate-300 rounded-full px-6 py-2.5 text-xs font-black text-slate-900 transition shadow-sm"
+                    >
+                      Explore eSIM Store
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Vertical Divider */}
+                <div className="hidden md:block w-[1px] bg-slate-200/80 self-stretch" />
+
+                {/* Right Panel: Regional and Global eSIMs */}
+                <div className="w-full md:w-72 shrink-0">
+                  <h3 className="text-lg font-black text-slate-900 mb-5">
+                    Regional and global eSIMs
+                  </h3>
+                  
+                  <div className="space-y-2.5 max-h-80 overflow-y-auto pr-2">
+                    {regionalLocations.map((region) => (
+                      <button
+                        key={region.slug}
+                        onClick={() => handleSelect(region.slug)}
+                        className="block w-full text-left text-sm font-medium text-slate-800 hover:text-sky-600 transition"
+                      >
+                        {region.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+            )}
           </div>
 
-          {/* Search Dropdown */}
-          {isOpen && filtered.length > 0 && (
-            <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden z-50 text-slate-800">
-              {filtered.map((dest) => (
-                <button
-                  key={dest.slug}
-                  onClick={() => handleSelect(dest.slug)}
-                  className="w-full text-left px-5 py-3 hover:bg-sky-50 flex items-center justify-between transition border-b border-slate-100 last:border-0"
-                >
-                  <div className="flex items-center space-x-3">
-                    <span className="text-xl">{dest.flag}</span>
-                    <span className="font-bold text-sm text-slate-900">{dest.name}</span>
-                  </div>
-                  <span className="text-xs font-black text-sky-600">{dest.priceEUR}</span>
-                </button>
-              ))}
-            </div>
-          )}
+          {/* Decorative Right Line */}
+          <div className="flex-1 h-[1px] bg-slate-300 hidden sm:block" />
         </div>
       </section>
 
-      {/* SCREENSHOT 1: WHY CHOOSE WORLDOVERIP BANNER */}
-      <section className="max-w-6xl mx-auto px-6 my-8">
+      {/* WHY CHOOSE WORLDOVERIP BANNER */}
+      <section className="max-w-7xl mx-auto px-6 my-8">
         <div className="bg-[#78C8DB] rounded-[36px] p-8 md:p-14 text-slate-900 relative overflow-hidden shadow-sm">
           <h2 className="text-2xl md:text-4xl font-black text-center mb-10 tracking-tight leading-tight">
             Why do over 30 million people choose WorldOverIP?
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">
-            {/* Feature 1 */}
             <div className="flex flex-col items-center text-center space-y-4">
               <div className="w-16 h-16 rounded-full bg-white shadow-md flex items-center justify-center shrink-0">
                 <Globe className="w-7 h-7 text-slate-900" />
@@ -131,7 +191,6 @@ export default function HomePage() {
               </p>
             </div>
 
-            {/* Feature 2 */}
             <div className="flex flex-col items-center text-center space-y-4">
               <div className="w-16 h-16 rounded-full bg-white shadow-md flex items-center justify-center shrink-0">
                 <ArrowUpDown className="w-7 h-7 text-slate-900" />
@@ -141,7 +200,6 @@ export default function HomePage() {
               </p>
             </div>
 
-            {/* Feature 3 */}
             <div className="flex flex-col items-center text-center space-y-4">
               <div className="w-16 h-16 rounded-full bg-white shadow-md flex items-center justify-center shrink-0">
                 <Smartphone className="w-7 h-7 text-slate-900" />
@@ -151,7 +209,6 @@ export default function HomePage() {
               </p>
             </div>
 
-            {/* Feature 4 */}
             <div className="flex flex-col items-center text-center space-y-4">
               <div className="w-16 h-16 rounded-full bg-white shadow-md flex items-center justify-center shrink-0">
                 <QrCode className="w-7 h-7 text-slate-900" />
@@ -164,11 +221,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* SCREENSHOT 2: POPULAR LOCATIONS GREEN CARD CONTAINER */}
-      <section className="max-w-6xl mx-auto px-6 my-10">
+      {/* POPULAR LOCATIONS CONTAINER */}
+      <section className="max-w-7xl mx-auto px-6 my-10">
         <div className="bg-[#5FB58A] rounded-[36px] p-6 md:p-10 text-slate-900 shadow-sm">
           
-          {/* Top Category Tabs */}
           <div className="border-b border-slate-900/20 pb-4 mb-6 flex flex-wrap items-center space-x-8 text-sm font-bold">
             <button
               onClick={() => setActiveTab('popular')}
@@ -211,7 +267,6 @@ export default function HomePage() {
             </button>
           </div>
 
-          {/* Heading & View All Button */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
             <div>
               <h2 className="text-2xl md:text-3xl font-black tracking-tight text-slate-900">
@@ -229,7 +284,6 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* 3-Column Pill Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {popularLocations.map((item) => (
               <Link
