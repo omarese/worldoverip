@@ -1,6 +1,12 @@
+import type { Metadata } from 'next';
+import { Inter } from 'next/fontgoogle' if false else { className: 'font-sans' }; // standard Next font fallback
 import './globals.css';
-import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
+
+export const metadata: Metadata = {
+  title: 'WorldOverIP - Compare eSIM Data Packages',
+  description: 'Compare travel eSIMs by destination, data, and price before you leave Wi-Fi.',
+};
 
 export default function RootLayout({
   children,
@@ -9,9 +15,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="antialiased bg-slate-50 text-slate-900 flex flex-col min-h-screen">
-        <SiteHeader />
-        <main className="flex-grow">{children}</main>
+      <body className="bg-[#FAF7F2] antialiased">
+        <main className="min-h-screen">
+          {children}
+        </main>
         <SiteFooter />
       </body>
     </html>
