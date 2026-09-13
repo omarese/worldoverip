@@ -1,6 +1,6 @@
 import './globals.css';
 import { SiteHeader } from '@/components/site-header';
-import Footer from './Footer';
+import { SiteFooter } from '@/components/site-footer';
 
 export default function RootLayout({
   children,
@@ -12,7 +12,7 @@ export default function RootLayout({
       <body className="antialiased bg-slate-50 text-slate-900 flex flex-col min-h-screen">
         <SiteHeader />
         <main className="flex-grow">{children}</main>
-        <Footer />
+        <SiteFooter />
       </body>
     </html>
   );
