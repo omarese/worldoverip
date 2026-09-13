@@ -1,44 +1,32 @@
-import { Geist, Geist_Mono, Fraunces } from "next/font/google";
-import { SiteFooter } from "@/components/site-footer";
-import { SiteHeader } from "@/components/site-header";
-import type { Metadata } from "next";
-import "./globals.css";
+import Link from 'next/link';
+import { Globe, ChevronDown } from 'lucide-react';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
-  subsets: ["latin"],
-});
-
-export const metadata: Metadata = {
-  title: {
-    default: "WorldOverIP — Compare travel eSIMs",
-    template: "%s · WorldOverIP",
-  },
-  description:
-    "Compare travel eSIM plans by destination, data, validity, and price. Stay online without roaming surprises.",
-};
-
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function Header() {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} h-full antialiased`}
-    >
-      <body className="flex min-h-full flex-col bg-background text-foreground">
-        <SiteHeader />
-        {children}
-        <SiteFooter />
-      </body>
-    </html>
+    <header className="bg-white border-b border-slate-100">
+      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        {/* Logo */}
+        <Link href="/" className="flex items-center space-x-2 text-blue-600 font-extrabold text-xl">
+          <Globe className="w-6 h-6" />
+          <span className="text-slate-900">WorldOverIP</span>
+        </Link>
+
+        {/* Navigation */}
+        <nav className="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-600">
+          <Link href="/" className="text-blue-600 font-semibold border-b-2 border-blue-600 pb-1">Home</Link>
+          <Link href="/destinations" className="hover:text-slate-900 transition">eSIM Comparison</Link>
+          <Link href="/destinations" className="hover:text-slate-900 transition">Destinations</Link>
+          <Link href="/providers" className="hover:text-slate-900 transition">Providers</Link>
+          <Link href="/about" className="hover:text-slate-900 transition">About</Link>
+        </nav>
+
+        {/* Language Selector */}
+        <div className="flex items-center space-x-1 text-sm text-slate-700 cursor-pointer hover:text-slate-900">
+          <Globe className="w-4 h-4 text-slate-500" />
+          <span className="font-medium">EN</span>
+          <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+        </div>
+      </div>
+    </header>
   );
 }
