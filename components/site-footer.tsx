@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Globe, Mail } from 'lucide-react';
 
-export default function Footer() {
+export function SiteFooter() {
   return (
     <footer className="bg-slate-900 text-slate-400 pt-16 pb-12 border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">

@@ -23,7 +23,6 @@ export default function HomePage() {
     { name: 'Mexico', flag: '🇲🇽', region: 'Americas', slug: 'mexico' },
   ];
 
-  // Filter list based on search query
   const filteredDestinations = query.trim() === ''
     ? []
     : destinations.filter((item) =>
@@ -44,7 +43,6 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-slate-900/60 to-transparent" />
 
         <div className="relative max-w-7xl mx-auto px-6 pt-20 pb-12 flex flex-col justify-between min-h-[580px]">
-          {/* Main Hero Header */}
           <div className="max-w-2xl space-y-4">
             <p className="text-xs font-bold tracking-widest text-blue-400 uppercase">
               Compare • Choose • Stay Connected
@@ -56,7 +54,7 @@ export default function HomePage() {
               Compare eSIM providers, find the best plans, and stay connected wherever you go — with no roaming fees and no hassle.
             </p>
 
-            {/* Interactive Live Search Dropdown */}
+            {/* Live Search Input with Dropdown */}
             <div className="pt-4 max-w-lg relative">
               <div className="flex items-center bg-white rounded-full p-2 pl-6 shadow-2xl text-slate-800">
                 <Search className="w-5 h-5 text-slate-400 mr-3 shrink-0" />
