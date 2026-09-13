@@ -1,29 +1,55 @@
-import Link from "next/link";
+import Link from 'next/link';
+import { Globe, Mail } from 'lucide-react';
 
-export function SiteFooter() {
+export default function Footer() {
   return (
-    <footer className="mt-auto border-t border-line bg-ink text-panel">
-      <div className="mx-auto grid max-w-6xl gap-8 px-5 py-10 sm:grid-cols-3">
-        <div>
-          <p className="font-serif text-xl">WorldOverIP</p>
-          <p className="mt-2 max-w-xs text-sm text-panel/70">
+    <footer className="bg-slate-900 text-slate-400 pt-16 pb-12 border-t border-slate-800">
+      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
+        {/* Brand Column */}
+        <div className="space-y-4 md:col-span-1">
+          <Link href="/" className="flex items-center space-x-2 text-white font-extrabold text-xl">
+            <Globe className="w-6 h-6 text-blue-500" />
+            <span>WorldOverIP</span>
+          </Link>
+          <p className="text-sm text-slate-400 leading-relaxed">
             Compare travel eSIMs by destination, data, and price before you leave Wi-Fi.
           </p>
         </div>
-        <div className="text-sm">
-          <p className="mb-2 uppercase tracking-[0.16em] text-highlight">Explore</p>
-          <div className="flex flex-col gap-1.5 text-panel/80">
-            <Link href="/destinations">Destinations</Link>
-            <Link href="/providers">Providers</Link>
-            <Link href="/guide">How eSIMs work</Link>
-            <Link href="/about">About</Link>
+
+        {/* Quick Links / Sitemap */}
+        <div>
+          <h4 className="text-white text-sm font-bold uppercase tracking-wider mb-4">Explore</h4>
+          <ul className="space-y-2 text-sm">
+            <li><Link href="/" className="hover:text-white transition">Home</Link></li>
+            <li><Link href="/destinations" className="hover:text-white transition">Destinations</Link></li>
+            <li><Link href="/providers" className="hover:text-white transition">Providers</Link></li>
+            <li><Link href="/guide" className="hover:text-white transition">How eSIMs Work</Link></li>
+          </ul>
+        </div>
+
+        {/* Company & Support */}
+        <div>
+          <h4 className="text-white text-sm font-bold uppercase tracking-wider mb-4">Company</h4>
+          <ul className="space-y-2 text-sm">
+            <li><Link href="/about" className="hover:text-white transition">About Us</Link></li>
+            <li><Link href="/privacy" className="hover:text-white transition">Privacy Policy</Link></li>
+            <li><Link href="/terms" className="hover:text-white transition">Terms of Service</Link></li>
+          </ul>
+        </div>
+
+        {/* Contact Info */}
+        <div>
+          <h4 className="text-white text-sm font-bold uppercase tracking-wider mb-4">Contact</h4>
+          <div className="flex items-center space-x-2 text-sm text-slate-300">
+            <Mail className="w-4 h-4 text-blue-400" />
+            <a href="mailto:support@worldoverip.com" className="hover:underline">support@worldoverip.com</a>
           </div>
         </div>
-        <p className="text-sm text-panel/65">
-          Plan prices on this site are a sample catalog for product development. Confirm live
-          pricing on each provider before you buy. WorldOverIP is independent and not affiliated
-          with the brands listed.
-        </p>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 pt-12 mt-12 border-t border-slate-800 text-xs text-slate-500 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+        <p>© {new Date().getFullYear()} WorldOverIP. All rights reserved.</p>
+        <p>Plan prices on this site are for product comparison. Confirm live pricing on provider sites before purchasing.</p>
       </div>
     </footer>
   );

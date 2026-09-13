@@ -1,34 +1,55 @@
-import Link from "next/link";
+'use client';
 
-const links = [
-  { href: "/destinations", label: "Destinations" },
-  { href: "/providers", label: "Providers" },
-  { href: "/guide", label: "How eSIMs work" },
-];
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Globe, ChevronDown } from 'lucide-react';
 
-export function SiteHeader() {
+export default function Header() {
+  const pathname = usePathname();
+
+  const navItems = [
+    { label: 'Home', href: '/' },
+    { label: 'eSIM Comparison', href: '/destinations' },
+    { label: 'Destinations', href: '/destinations' },
+    { label: 'Providers', href: '/providers' },
+    { label: 'About', href: '/about' },
+  ];
+
   return (
-    <header className="border-b border-line bg-panel/80 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-5 py-4">
-        <Link href="/" className="flex items-baseline gap-2 tracking-tight">
-          <span className="font-serif text-xl font-semibold text-ink">WorldOverIP</span>
-          <span className="hidden text-xs uppercase tracking-[0.18em] text-muted sm:inline">
-            eSIM comparison
-          </span>
+    <header className="bg-white border-b border-slate-100">
+      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        {/* Logo */}
+        <Link href="/" className="flex items-center space-x-2 text-blue-600 font-extrabold text-xl">
+          <Globe className="w-6 h-6" />
+          <span className="text-slate-900">WorldOverIP</span>
         </Link>
-        <nav className="flex items-center gap-5 text-sm text-ink">
-          {links.map((link) => (
-            <Link key={link.href} href={link.href} className="hover:text-accent">
-              {link.label}
-            </Link>
-          ))}
-          <Link
-            href="/destinations"
-            className="rounded-full bg-ink px-3.5 py-1.5 text-sm text-highlight hover:bg-accent-dark"
-          >
-            Compare plans
-          </Link>
+
+        {/* Dynamic Navigation Links */}
+        <nav className="hidden md:flex items-center space-x-8 text-sm font-medium">
+          {navItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.label}
+                href={item.href}
+                className={`transition pb-1 ${
+                  isActive
+                    ? 'text-blue-600 font-semibold border-b-2 border-blue-600'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
         </nav>
+
+        {/* Language Selector */}
+        <div className="flex items-center space-x-1 text-sm text-slate-700 cursor-pointer hover:text-slate-900">
+          <Globe className="w-4 h-4 text-slate-500" />
+          <span className="font-medium">EN</span>
+          <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+        </div>
       </div>
     </header>
   );
