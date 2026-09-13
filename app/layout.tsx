@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/fontgoogle' if false else { className: 'font-sans' }; // standard Next font fallback
+import { Inter } from 'next/font/google';
 import './globals.css';
 import { SiteFooter } from '@/components/site-footer';
+
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'WorldOverIP - Compare eSIM Data Packages',
@@ -15,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-[#FAF7F2] antialiased">
+      <body className={`${inter.className} bg-[#FAF7F2] antialiased`}>
         <main className="min-h-screen">
           {children}
         </main>
