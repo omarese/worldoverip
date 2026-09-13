@@ -12,8 +12,7 @@ import {
   QrCode, 
   Sparkles,
   MapPin,
-  Clock,
-  X
+  Clock
 } from 'lucide-react';
 
 interface Destination {
@@ -60,7 +59,6 @@ export default function HomePage() {
     { name: 'Global', slug: 'global' },
   ];
 
-  // Load recent searches from localStorage on mount
   useEffect(() => {
     const saved = localStorage.getItem('worldoverip_recents');
     if (saved) {
@@ -96,10 +94,29 @@ export default function HomePage() {
   };
 
   return (
-    <div className="bg-[#FAF7F2] min-h-screen text-slate-800 font-sans tracking-tight pb-20">
+    <div className="bg-[#FAF7F2] min-h-screen text-slate-800 font-sans tracking-tight pb-20 relative overflow-hidden">
       
+      {/* BACKGROUND DECORATIVE SHAPES (AIRALO STYLE) */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        {/* Soft Peach Circle - Top Center under search */}
+        <div className="absolute top-[180px] left-1/2 -translate-x-1/2 w-[340px] h-[340px] rounded-full bg-[#FCD8B5]/50 blur-xl" />
+        
+        {/* Warm Orange Circle - Top Right */}
+        <div className="absolute top-[-50px] right-[-80px] w-[450px] h-[450px] rounded-full bg-[#FCE5CD]/60 blur-2xl" />
+
+        {/* Soft Pastel Blue/Teal Circle - Left Center */}
+        <div className="absolute top-[40%] left-[-120px] w-[500px] h-[500px] rounded-full bg-[#D4F1F4]/40 blur-3xl" />
+
+        {/* Coral Warm Circle - Bottom Right */}
+        <div className="absolute bottom-[10%] right-[-100px] w-[420px] h-[420px] rounded-full bg-[#FBE4D8]/60 blur-2xl" />
+
+        {/* Floating Crisp Solid Peach Circle (Matches Airalo Screenshot) */}
+        <div className="absolute top-[280px] right-[15%] w-24 h-24 rounded-full bg-[#FCD8B5]/80 hidden lg:block" />
+        <div className="absolute top-[120px] left-[10%] w-16 h-16 rounded-full bg-[#FCE5CD] hidden lg:block" />
+      </div>
+
       {/* HERO SECTION WITH HEADLINE */}
-      <section className="pt-12 pb-6 px-6 max-w-5xl mx-auto text-center space-y-3">
+      <section className="relative z-10 pt-12 pb-6 px-6 max-w-5xl mx-auto text-center space-y-3">
         <h1 className="text-3xl md:text-5xl font-black tracking-tight leading-tight text-slate-900">
           Stay connected, wherever you travel,<br className="hidden md:block" /> at affordable rates
         </h1>
@@ -109,9 +126,9 @@ export default function HomePage() {
       </section>
 
       {/* FULL-WIDTH SEARCH BAR SECTION */}
-      <section className="pb-10 px-4 max-w-[96%] mx-auto">
+      <section className="relative z-20 pb-10 px-4 max-w-[96%] mx-auto">
         <div className="flex items-center gap-4">
-          <div className="flex-1 h-[1px] bg-slate-300 hidden md:block" />
+          <div className="flex-1 h-[1px] bg-slate-300/80 hidden md:block" />
 
           {/* Search Container */}
           <div className="relative w-full md:max-w-5xl mx-auto">
@@ -148,7 +165,7 @@ export default function HomePage() {
               </button>
             </div>
 
-            {/* RECENT SEARCHES & LIVE MATCHES POPUP (Triggered on search input focus) */}
+            {/* RECENT SEARCHES POPUP */}
             {isSearchFocused && (
               <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden z-50 p-5">
                 {query.trim() !== '' ? (
@@ -211,7 +228,7 @@ export default function HomePage() {
               </div>
             )}
 
-            {/* DUAL PANEL LOCATIONS DROPDOWN (Triggered ONLY by 'Locations' button) */}
+            {/* DUAL PANEL LOCATIONS DROPDOWN */}
             {isLocationsOpen && (
               <div className="absolute top-full left-0 right-0 mt-3 bg-[#F7F4EE] rounded-3xl shadow-2xl border border-slate-200/80 overflow-hidden z-50 p-6 flex flex-col md:flex-row gap-6">
                 
@@ -275,12 +292,12 @@ export default function HomePage() {
             )}
           </div>
 
-          <div className="flex-1 h-[1px] bg-slate-300 hidden md:block" />
+          <div className="flex-1 h-[1px] bg-slate-300/80 hidden md:block" />
         </div>
       </section>
 
       {/* COMPACT BLUE FEATURE BANNER */}
-      <section className="max-w-5xl mx-auto px-6 my-6">
+      <section className="relative z-10 max-w-5xl mx-auto px-6 my-6">
         <div className="bg-[#78C8DB] rounded-[28px] p-6 md:p-10 text-slate-900 relative overflow-hidden shadow-sm">
           <h2 className="text-xl md:text-3xl font-black text-center mb-8 tracking-tight leading-tight">
             Why do over 30 million people choose WorldOverIP?
@@ -327,7 +344,7 @@ export default function HomePage() {
       </section>
 
       {/* COMPACT GREEN LOCATIONS CONTAINER */}
-      <section className="max-w-5xl mx-auto px-6 my-8">
+      <section className="relative z-10 max-w-5xl mx-auto px-6 my-8">
         <div className="bg-[#5FB58A] rounded-[28px] p-6 md:p-8 text-slate-900 shadow-sm">
           
           <div className="border-b border-slate-900/20 pb-3 mb-5 flex flex-wrap items-center space-x-6 text-xs font-bold">
