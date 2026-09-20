@@ -1,124 +1,82 @@
-'use client';
-
-import Link from 'next/link';
-import { Mail, Globe } from 'lucide-react';
+import Link from "next/link";
 
 export function SiteFooter() {
   return (
-    <footer className="bg-[#FAF7F2] text-slate-800 relative overflow-hidden pt-16 pb-12 border-t border-slate-200/60">
-      
-      {/* BACKGROUND DECORATIVE PARTICLES AND BLOBS */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-        {/* Soft Peach Circle - Left */}
-        <div className="absolute -bottom-20 -left-20 w-[350px] h-[350px] rounded-full bg-[#FCD8B5]/40 blur-2xl" />
-
-        {/* Coral Warm Blob - Right */}
-        <div className="absolute top-0 -right-20 w-[400px] h-[400px] rounded-full bg-[#FCE5CD]/60 blur-3xl" />
-
-        {/* Subtle Decorative Particle Dots */}
-        <div className="absolute top-10 left-[15%] w-2.5 h-2.5 rounded-full bg-[#FCD8B5]/80" />
-        <div className="absolute bottom-16 left-[45%] w-3 h-3 rounded-full bg-[#5FB58A]/30" />
-        <div className="absolute top-1/2 right-[25%] w-2 h-2 rounded-full bg-[#78C8DB]/50" />
-        <div className="absolute bottom-8 right-[10%] w-3.5 h-3.5 rounded-full bg-[#FCD8B5]" />
-      </div>
-
-      <div className="max-w-6xl mx-auto px-6 relative z-10">
-        {/* TOP SECTION */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12">
-          
-          {/* Brand Column */}
-          <div className="space-y-4">
-            <Link href="/" className="flex items-center space-x-2">
-              <Globe className="w-6 h-6 text-sky-600" />
-              <span className="text-xl font-black text-slate-900 tracking-tight">
-                WorldOverIP
+    <footer className="border-t border-white/10 bg-black/60 backdrop-blur-sm text-zinc-400 text-sm">
+      <div className="container mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* Colonna 1: Bio / Concept */}
+          <div className="space-y-3 md:col-span-2">
+            <div className="flex items-center gap-2">
+              <span className="flex h-7 w-7 items-center justify-center rounded-md bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-500/30 text-xs font-bold">
+                W
               </span>
-            </Link>
-            <p className="text-xs text-slate-600 font-medium leading-relaxed max-w-xs">
-              Compare travel eSIMs by destination, data, and price before you leave Wi-Fi.
+              <span className="font-semibold text-white tracking-tight">
+                worldover<span className="text-emerald-400">ip</span>
+              </span>
+            </div>
+            <p className="text-xs text-zinc-400 max-w-sm leading-relaxed">
+              Il tuo diario di viaggio globale. Condividi storie, coordinate, foto e itinerari 
+              con una community di viaggiatori di tutto il mondo.
             </p>
           </div>
 
-          {/* Explore Links */}
+          {/* Colonna 2: Piattaforma */}
           <div>
-            <h4 className="text-xs font-black text-slate-900 tracking-wider uppercase mb-4">
-              Explore
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-200 mb-3">
+              Piattaforma
             </h4>
-            <ul className="space-y-2.5 text-xs font-semibold text-slate-600">
+            <ul className="space-y-2 text-xs">
               <li>
-                <Link href="/" className="hover:text-sky-600 transition">
-                  Home
+                <Link href="/#feed" className="hover:text-emerald-400 transition-colors">
+                  Feed Globale
                 </Link>
               </li>
               <li>
-                <Link href="/destinations" className="hover:text-sky-600 transition">
-                  Destinations
+                <Link href="/#explore" className="hover:text-emerald-400 transition-colors">
+                  Mappa & Destinazioni
                 </Link>
               </li>
               <li>
-                <Link href="/providers" className="hover:text-sky-600 transition">
-                  Providers
-                </Link>
-              </li>
-              <li>
-                <Link href="/how-esims-work" className="hover:text-sky-600 transition">
-                  How eSIMs Work
+                <Link href="/#create" className="hover:text-emerald-400 transition-colors">
+                  Crea Diario
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Company Links */}
+          {/* Colonna 3: Community & Info */}
           <div>
-            <h4 className="text-xs font-black text-slate-900 tracking-wider uppercase mb-4">
-              Company
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-200 mb-3">
+              Community
             </h4>
-            <ul className="space-y-2.5 text-xs font-semibold text-slate-600">
+            <ul className="space-y-2 text-xs">
               <li>
-                <Link href="/about" className="hover:text-sky-600 transition">
-                  About Us
+                <Link href="/about" className="hover:text-emerald-400 transition-colors">
+                  Chi siamo
                 </Link>
               </li>
               <li>
-                <Link href="/privacy" className="hover:text-sky-600 transition">
+                <Link href="/privacy" className="hover:text-emerald-400 transition-colors">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="/terms" className="hover:text-sky-600 transition">
-                  Terms of Service
+                <Link href="/terms" className="hover:text-emerald-400 transition-colors">
+                  Termini di Servizio
                 </Link>
               </li>
             </ul>
           </div>
-
-          {/* Contact Column */}
-          <div>
-            <h4 className="text-xs font-black text-slate-900 tracking-wider uppercase mb-4">
-              Contact
-            </h4>
-            <a 
-              href="mailto:support@worldoverip.com"
-              className="inline-flex items-center space-x-2 text-xs font-semibold text-slate-700 hover:text-sky-600 transition"
-            >
-              <Mail className="w-4 h-4 text-sky-600" />
-              <span>support@worldoverip.com</span>
-            </a>
-          </div>
-
         </div>
 
-        {/* BOTTOM COPYRIGHT & DISCLAIMER */}
-        <div className="pt-8 border-t border-slate-300/60 flex flex-col md:flex-row items-center justify-between text-[11px] text-slate-500 font-medium gap-4">
-          <p>© 2026 WorldOverIP. All rights reserved.</p>
-          <p className="text-center md:text-right max-w-md">
-            Plan prices on this site are for product comparison. Confirm live pricing on provider sites before purchasing.
+        <div className="mt-8 pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
+          <p>© {new Date().getFullYear()} worldoverip.com. Tutti i diritti riservati.</p>
+          <p className="text-zinc-500">
+            Connetti i tuoi viaggi alla rete globale.
           </p>
         </div>
       </div>
-
     </footer>
   );
 }
-
-export default SiteFooter;

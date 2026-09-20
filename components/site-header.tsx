@@ -1,47 +1,61 @@
-'use client';
-
-import Link from 'next/link';
-import { Globe } from 'lucide-react';
+import Link from "next/link";
 
 export function SiteHeader() {
   return (
-    <header className="w-full bg-[#FAF7F2] relative z-30 py-4 px-6 md:px-12 flex items-center justify-between border-b border-slate-200/50">
-      
-      {/* Logo */}
-      <Link href="/" className="flex items-center space-x-2">
-        <Globe className="w-6 h-6 text-sky-600" />
-        <span className="text-xl font-black text-slate-900 tracking-tight">
-          WorldOverIP
-        </span>
-      </Link>
+    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/40 backdrop-blur-md">
+      <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        {/* Brand / Logo */}
+        <div className="flex items-center gap-8">
+          <Link href="/" className="flex items-center gap-2 group">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-500/30 font-bold transition-transform group-hover:scale-105">
+              W
+            </span>
+            <div className="flex flex-col">
+              <span className="text-base font-semibold tracking-tight text-white group-hover:text-emerald-400 transition-colors">
+                worldover<span className="text-emerald-400">ip</span>
+              </span>
+            </div>
+          </Link>
 
-      {/* Navigation Links & Action Buttons */}
-      <div className="flex items-center space-x-6 text-xs font-bold text-slate-800">
-        <Link 
-          href="/destinations" 
-          className="hover:text-sky-600 transition hidden sm:inline-block"
-        >
-          Destinations
-        </Link>
-        <Link 
-          href="/providers" 
-          className="hover:text-sky-600 transition hidden sm:inline-block"
-        >
-          Providers
-        </Link>
+          {/* Navigation Links */}
+          <nav className="hidden md:flex items-center gap-6 text-sm text-zinc-300">
+            <Link
+              href="/#feed"
+              className="transition-colors hover:text-emerald-400 hover:underline underline-offset-4"
+            >
+              Feed
+            </Link>
+            <Link
+              href="/#explore"
+              className="transition-colors hover:text-emerald-400 hover:underline underline-offset-4"
+            >
+              Esplora Posti
+            </Link>
+            <Link
+              href="/#community"
+              className="transition-colors hover:text-emerald-400 hover:underline underline-offset-4"
+            >
+              Viaggiatori
+            </Link>
+          </nav>
+        </div>
 
-        {/* Currency / Language Selector Pill */}
-        <button 
-          type="button"
-          className="flex items-center space-x-1.5 bg-white border border-slate-300 rounded-full px-3.5 py-2 hover:bg-slate-50 transition shadow-sm text-slate-900"
-        >
-          <Globe className="w-3.5 h-3.5 text-slate-600" />
-          <span>EUR (€)</span>
-        </button>
+        {/* Auth Buttons */}
+        <div className="flex items-center gap-3">
+          <Link
+            href="/login"
+            className="rounded-full px-4 py-1.5 text-sm font-medium text-zinc-300 transition-colors hover:text-white hover:bg-white/10"
+          >
+            Accedi
+          </Link>
+          <Link
+            href="/register"
+            className="rounded-full bg-emerald-500 px-4 py-1.5 text-sm font-medium text-black transition-all hover:bg-emerald-400 hover:shadow-[0_0_20px_rgba(16,185,129,0.35)]"
+          >
+            Registrati
+          </Link>
+        </div>
       </div>
-
     </header>
   );
 }
-
-export default SiteHeader;
