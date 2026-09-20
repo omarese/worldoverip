@@ -1,139 +1,140 @@
-import Link from "next/link";
+import Link from 'next/link';
+import { BookOpen, MapPin, Users, Heart, PenLine } from 'lucide-react';
+import { StoryFeed } from '@/components/story-feed';
+import { DestinationCard } from '@/components/destination-card';
+import { destinations, stories } from '@/lib/data';
 
-const mockTravelPosts = [
-  {
-    id: 1,
-    author: "marco_globetrotter",
-    location: "Kyoto, Giappone",
-    image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800&auto=format&fit=crop&q=80",
-    caption: "Alba tra i templi di Higashiyama prima che la città si svegli ⛩️",
-    date: "Oggi",
-    likes: 184
-  },
-  {
-    id: 2,
-    author: "elena_ontheroad",
-    location: "Dolomiti, Italia",
-    image: "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800&auto=format&fit=crop&q=80",
-    caption: "Tappa 3 del trekking: pernottamento sotto le Tre Cime 🏔️",
-    date: "Ieri",
-    likes: 243
-  },
-  {
-    id: 3,
-    author: "sam_explores",
-    location: "Reykjavik, Islanda",
-    image: "https://images.unsplash.com/photo-1504893524553-b855bce32c67?w=800&auto=format&fit=crop&q=80",
-    caption: "La prima notte a caccia dell'aurora boreale. Esperienza magica ✨",
-    date: "2 giorni fa",
-    likes: 312
-  }
+const features = [
+  { Icon: BookOpen, text: 'Write diary-style posts for every day of your trip' },
+  { Icon: MapPin, text: 'Pin each story to a country so others can find it' },
+  { Icon: Users, text: 'Follow travellers and get inspired by their journeys' },
+  { Icon: Heart, text: 'Like the stories that make you want to pack your bag' },
 ];
 
 export default function HomePage() {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-slate-950 text-slate-100">
-      {/* Sfondo originale con glow sfumati */}
-      <div className="pointer-events-none absolute -top-40 left-1/2 h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-gradient-to-tr from-sky-500/15 via-blue-500/10 to-indigo-500/15 blur-3xl" />
-      <div className="pointer-events-none absolute top-96 right-0 h-[400px] w-[400px] rounded-full bg-indigo-500/10 blur-3xl" />
+    <div className="pb-20">
 
-      {/* Hero Section */}
-      <section className="relative z-10 mx-auto max-w-4xl px-4 pt-20 pb-16 text-center sm:px-6 lg:px-8">
-        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-sky-500/20 bg-sky-500/10 px-3.5 py-1.5 text-xs font-medium text-sky-400">
-          <span className="h-2 w-2 animate-pulse rounded-full bg-sky-400" />
-          Il tuo diario di viaggio globale
-        </div>
-
-        <h1 className="mb-6 text-4xl font-extrabold tracking-tight text-white sm:text-6xl">
-          Condividi ogni tappa su{" "}
-          <span className="bg-gradient-to-r from-sky-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
-            worldoverip
-          </span>
+      {/* HERO SECTION WITH HEADLINE */}
+      <section className="relative z-10 pt-12 pb-6 px-6 max-w-5xl mx-auto text-center space-y-3">
+        <h1 className="text-3xl md:text-5xl font-black tracking-tight leading-tight text-slate-900">
+          Share your journey, wherever you travel,<br className="hidden md:block" /> and inspire the next trip
         </h1>
-
-        <p className="mx-auto mb-8 max-w-2xl text-base leading-relaxed text-slate-300 sm:text-lg">
-          Crea il tuo profilo, scatta e racconta le tue avventure con posizione geografica e data.
-          Costruisci il tuo diario itinerante e scopri dove stanno viaggiando gli altri.
+        <p className="text-slate-600 font-medium text-sm md:text-base">
+          Keep a travel diary, share your favourite places and discover stories from travellers around the world.
         </p>
+      </section>
 
-        <div className="flex flex-wrap items-center justify-center gap-4">
-          <Link
-            href="/register"
-            className="rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 px-6 py-3 font-semibold text-white shadow-lg shadow-sky-500/25 transition hover:from-sky-400 hover:to-blue-500"
-          >
-            Inizia il tuo Diario
-          </Link>
-          <Link
-            href="#feed"
-            className="rounded-xl border border-slate-700 bg-slate-900/60 px-6 py-3 font-semibold text-slate-200 transition hover:bg-slate-800 hover:text-white"
-          >
-            Guarda i Post
-          </Link>
+      {/* CALL TO ACTION ROW */}
+      <section className="relative z-20 pb-10 px-4 max-w-[96%] mx-auto">
+        <div className="flex items-center gap-4">
+          <div className="flex-1 h-[1px] bg-slate-300/80 hidden md:block" />
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mx-auto">
+            <Link
+              href="/register"
+              className="inline-flex items-center space-x-2 bg-slate-900 hover:bg-slate-700 text-white rounded-full px-7 py-3.5 text-sm font-black shadow-sm transition"
+            >
+              <PenLine className="w-4 h-4" />
+              <span>Share your first trip</span>
+            </Link>
+            <Link
+              href="/explore"
+              className="bg-white hover:bg-slate-50 border border-slate-300 text-slate-900 rounded-full px-7 py-3.5 text-sm font-extrabold shadow-sm transition"
+            >
+              Explore stories
+            </Link>
+          </div>
+
+          <div className="flex-1 h-[1px] bg-slate-300/80 hidden md:block" />
         </div>
       </section>
 
-      {/* Feed Card */}
-      <section id="feed" className="relative z-10 mx-auto max-w-xl space-y-6 px-4 pb-24">
-        <div className="flex items-center justify-between border-b border-slate-800/80 pb-4">
-          <div>
-            <h2 className="text-lg font-bold text-white">Storie recenti</h2>
-            <p className="text-xs text-slate-400">Memorie e foto condivise dai viaggiatori</p>
+      {/* COMPACT BLUE FEATURE BANNER */}
+      <section className="relative z-10 max-w-5xl mx-auto px-6 my-6">
+        <div className="bg-[#78C8DB] rounded-[28px] p-6 md:p-10 text-slate-900 relative overflow-hidden shadow-sm">
+          <h2 className="text-xl md:text-3xl font-black text-center mb-8 tracking-tight leading-tight">
+            Why do travellers love sharing on WorldOverIP?
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {features.map(({ Icon, text }) => (
+              <div key={text} className="flex flex-col items-center text-center space-y-3">
+                <div className="w-14 h-14 rounded-full bg-white shadow-md flex items-center justify-center shrink-0">
+                  <Icon className="w-6 h-6 text-slate-900" />
+                </div>
+                <p className="text-xs font-extrabold leading-snug px-2">{text}</p>
+              </div>
+            ))}
           </div>
-          <Link href="/register" className="text-xs text-sky-400 hover:underline">
-            Condividi una tappa →
-          </Link>
         </div>
+      </section>
 
-        {mockTravelPosts.map((post) => (
-          <article
-            key={post.id}
-            className="overflow-hidden rounded-2xl border border-slate-800/80 bg-slate-900/60 shadow-xl backdrop-blur-md"
-          >
-            {/* Header del post */}
-            <div className="flex items-center justify-between p-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-sky-500 to-indigo-500 text-xs font-bold uppercase text-white">
-                  {post.author.charAt(0)}
-                </div>
-                <div>
-                  <h3 className="text-sm font-semibold text-slate-100">
-                    @{post.author}
-                  </h3>
-                  <p className="text-xs text-sky-400">
-                    📍 {post.location}
-                  </p>
-                </div>
-              </div>
-              <span className="text-xs text-slate-400">{post.date}</span>
-            </div>
+      {/* COMPACT GREEN STORIES CONTAINER */}
+      <section className="relative z-10 max-w-5xl mx-auto px-6 my-8">
+        <StoryFeed
+          stories={stories}
+          limit={6}
+          title="Fresh from the road"
+          subtitle="The latest and most loved travel stories from our community."
+          viewAllHref="/explore"
+        />
+      </section>
 
-            {/* Immagine */}
-            <div className="aspect-square w-full overflow-hidden bg-slate-950">
-              <img
-                src={post.image}
-                alt={post.location}
-                className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
-              />
-            </div>
-
-            {/* Azioni e Didascalia */}
-            <div className="space-y-2 p-4">
-              <div className="flex items-center gap-4 text-xs font-medium text-slate-300">
-                <button className="transition hover:text-red-400">
-                  ❤️ {post.likes} Mi piace
-                </button>
-                <button className="transition hover:text-sky-400">
-                  💬 Commenta
-                </button>
-              </div>
-              <p className="text-sm leading-snug text-slate-200">
-                <span className="mr-2 font-semibold text-white">@{post.author}</span>
-                {post.caption}
+      {/* PEACH DESTINATIONS CONTAINER */}
+      <section className="relative z-10 max-w-5xl mx-auto px-6 my-8">
+        <div className="bg-[#FCD8B5] rounded-[28px] p-6 md:p-8 text-slate-900 shadow-sm">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-6">
+            <div>
+              <h2 className="text-xl md:text-2xl font-black tracking-tight text-slate-900">
+                Where do you want to go next?
+              </h2>
+              <p className="text-xs text-slate-900/80 font-medium">
+                Pick a destination and read what travellers say about it.
               </p>
             </div>
-          </article>
-        ))}
+            <Link
+              href="/destinations"
+              className="bg-white hover:bg-slate-50 text-slate-900 font-extrabold text-xs px-4 py-2.5 rounded-full shadow-sm transition self-start md:self-auto shrink-0"
+            >
+              View all destinations
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            {destinations.slice(0, 6).map((destination) => (
+              <DestinationCard key={destination.slug} destination={destination} />
+            ))}
+          </div>
+        </div>
       </section>
+
+      {/* JOIN CALL TO ACTION */}
+      <section className="relative z-10 max-w-5xl mx-auto px-6 my-8">
+        <div className="bg-white rounded-[28px] border border-slate-200/80 shadow-sm p-6 md:p-10 text-center">
+          <h2 className="text-xl md:text-3xl font-black tracking-tight text-slate-900">
+            Got a trip worth sharing?
+          </h2>
+          <p className="mt-2 text-sm font-medium text-slate-600 max-w-xl mx-auto">
+            Create a free account and start your travel diary. Your next trip could be someone else’s inspiration.
+          </p>
+          <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link
+              href="/register"
+              className="bg-slate-900 hover:bg-slate-700 text-white rounded-full px-7 py-3.5 text-sm font-black shadow-sm transition"
+            >
+              Register for free
+            </Link>
+            <Link
+              href="/login"
+              className="bg-white hover:bg-slate-50 border border-slate-300 text-slate-900 rounded-full px-7 py-3.5 text-sm font-extrabold shadow-sm transition"
+            >
+              Login
+            </Link>
+          </div>
+        </div>
+      </section>
+
     </div>
   );
 }
