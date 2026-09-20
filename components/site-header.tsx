@@ -1,7 +1,11 @@
 import Link from 'next/link';
 import { Globe } from 'lucide-react';
+import { getCurrentUser } from '@/lib/auth';
+import { signOut } from '@/app/auth/actions';
 
-export function SiteHeader() {
+export async function SiteHeader() {
+  const user = await getCurrentUser();
+
   return (
     <header className="w-full bg-[#FAF7F2] relative z-30 py-4 px-6 md:px-12 flex items-center justify-between border-b border-slate-200/50">
 
@@ -28,21 +32,40 @@ export function SiteHeader() {
           Destinations
         </Link>
 
-        {/* Login / Register */}
-        <div className="flex items-center space-x-2">
-          <Link
-            href="/login"
-            className="bg-white border border-slate-300 rounded-full px-3.5 py-2 hover:bg-slate-50 transition shadow-sm text-slate-900"
-          >
-            Login
-          </Link>
-          <Link
-            href="/register"
-            className="bg-slate-900 border border-slate-900 rounded-full px-3.5 py-2 hover:bg-slate-700 transition shadow-sm text-white"
-          >
-            Register
-          </Link>
-        </div>
+        {user ? (
+          /* Logged in: username + Logout */
+          <div className="flex items-center space-x-2">
+            {user.username && (
+              <span className="hidden sm:inline-block font-extrabold text-slate-900">
+                @{user.username}
+              </span>
+            )}
+            <form action={signOut}>
+              <button
+                type="submit"
+                className="bg-white border border-slate-300 rounded-full px-3.5 py-2 hover:bg-slate-50 transition shadow-sm text-slate-900"
+              >
+                Logout
+              </button>
+            </form>
+          </div>
+        ) : (
+          /* Logged out: Login / Register */
+          <div className="flex items-center space-x-2">
+            <Link
+              href="/login"
+              className="bg-white border border-slate-300 rounded-full px-3.5 py-2 hover:bg-slate-50 transition shadow-sm text-slate-900"
+            >
+              Login
+            </Link>
+            <Link
+              href="/register"
+              className="bg-slate-900 border border-slate-900 rounded-full px-3.5 py-2 hover:bg-slate-700 transition shadow-sm text-white"
+            >
+              Register
+            </Link>
+          </div>
+        )}
       </div>
 
     </header>
