@@ -1,4 +1,3 @@
-cat > app/contact/page.tsx <<'EOF'
 import type { Metadata } from 'next';
 import { InfoPage, InfoSection } from '@/components/info-page';
 
@@ -18,4 +17,3 @@ export default function ContactPage() {
     </InfoPage>
   );
 }
-EOF
