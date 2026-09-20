@@ -1,134 +1,133 @@
 import Link from "next/link";
-import Image from "next/image";
 
-// Esempi mock di post per l'anteprima del feed
-const mockPosts = [
+const mockTravelPosts = [
   {
     id: 1,
-    author: "marco_explorer",
-    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
+    author: "marco_globetrotter",
     location: "Kyoto, Giappone",
     image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800&auto=format&fit=crop&q=80",
-    caption: "Passeggiata mattutina tra i torii del Fushimi Inari prima della folla ⛩️",
-    likes: 142,
-    date: "2 ore fa"
+    caption: "Alba tra i templi di Higashiyama prima che la città si svegli ⛩️",
+    date: "Oggi",
+    likes: 184
   },
   {
     id: 2,
-    author: "clara_wanders",
-    avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&auto=format&fit=crop&q=80",
-    location: "Reykjavik, Islanda",
-    image: "https://images.unsplash.com/photo-1504893524553-b855bce32c67?w=800&auto=format&fit=crop&q=80",
-    caption: "Aurora boreale visibile direttamente dal fiordo. Sensazione inspiegabile.",
-    likes: 318,
-    date: "Ieri"
+    author: "elena_ontheroad",
+    location: "Dolomiti, Italia",
+    image: "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800&auto=format&fit=crop&q=80",
+    caption: "Tappa 3 del trekking: pernottamento sotto le Tre Cime 🏔️",
+    date: "Ieri",
+    likes: 243
   },
   {
     id: 3,
-    author: "luca_dolomiti",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
-    location: "Tre Cime di Lavaredo, Italia",
-    image: "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800&auto=format&fit=crop&q=80",
-    caption: "Alba a 2400m di quota dopo una notte in rifugio 🏔️",
-    likes: 205,
-    date: "3 giorni fa"
+    author: "sam_explores",
+    location: "Reykjavik, Islanda",
+    image: "https://images.unsplash.com/photo-1504893524553-b855bce32c67?w=800&auto=format&fit=crop&q=80",
+    caption: "La prima notte a caccia dell'aurora boreale. Esperienza magica ✨",
+    date: "2 giorni fa",
+    likes: 312
   }
 ];
 
 export default function HomePage() {
   return (
-    <div className="relative min-h-screen text-white">
-      {/* Background Layer (Mantiene la consistenza visuale precedente) */}
-      <div 
-        className="fixed inset-0 -z-10 bg-cover bg-center opacity-25 filter blur-sm pointer-events-none"
-        style={{ backgroundImage: "url('/hero-bg.jpg')" }}
-      />
-      <div className="fixed inset-0 -z-10 bg-gradient-to-b from-black/60 via-zinc-950/80 to-black pointer-events-none" />
+    <div className="relative min-h-screen overflow-hidden bg-slate-950 text-slate-100">
+      {/* Sfondo originale con glow sfumati */}
+      <div className="pointer-events-none absolute -top-40 left-1/2 h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-gradient-to-tr from-sky-500/15 via-blue-500/10 to-indigo-500/15 blur-3xl" />
+      <div className="pointer-events-none absolute top-96 right-0 h-[400px] w-[400px] rounded-full bg-indigo-500/10 blur-3xl" />
 
       {/* Hero Section */}
-      <section className="relative pt-20 pb-16 px-4 sm:px-6 lg:px-8 text-center max-w-4xl mx-auto">
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-6">
+      <section className="relative z-10 mx-auto max-w-4xl px-4 pt-20 pb-16 text-center sm:px-6 lg:px-8">
+        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-sky-500/20 bg-sky-500/10 px-3.5 py-1.5 text-xs font-medium text-sky-400">
+          <span className="h-2 w-2 animate-pulse rounded-full bg-sky-400" />
           Il tuo diario di viaggio globale
-        </span>
-        <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-6">
-          Condividi ogni tappa del tuo viaggio su{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">
+        </div>
+
+        <h1 className="mb-6 text-4xl font-extrabold tracking-tight text-white sm:text-6xl">
+          Condividi ogni tappa su{" "}
+          <span className="bg-gradient-to-r from-sky-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
             worldoverip
           </span>
         </h1>
-        <p className="text-lg text-zinc-300 max-w-2xl mx-auto mb-8 leading-relaxed">
-          Crea il tuo profilo, carica foto e coordinate geografiche di ogni posto visitato, 
-          e costruisci la mappa interattiva delle tue avventure nel mondo.
+
+        <p className="mx-auto mb-8 max-w-2xl text-base leading-relaxed text-slate-300 sm:text-lg">
+          Crea il tuo profilo, scatta e racconta le tue avventure con posizione geografica e data.
+          Costruisci il tuo diario itinerante e scopri dove stanno viaggiando gli altri.
         </p>
+
         <div className="flex flex-wrap items-center justify-center gap-4">
           <Link
             href="/register"
-            className="rounded-full bg-emerald-500 px-6 py-3 font-semibold text-black transition-all hover:bg-emerald-400 hover:shadow-[0_0_25px_rgba(16,185,129,0.4)]"
+            className="rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 px-6 py-3 font-semibold text-white shadow-lg shadow-sky-500/25 transition hover:from-sky-400 hover:to-blue-500"
           >
             Inizia il tuo Diario
           </Link>
           <Link
             href="#feed"
-            className="rounded-full border border-white/20 bg-white/5 px-6 py-3 font-semibold text-zinc-200 transition-colors hover:bg-white/10"
+            className="rounded-xl border border-slate-700 bg-slate-900/60 px-6 py-3 font-semibold text-slate-200 transition hover:bg-slate-800 hover:text-white"
           >
-            Esplora le Storie
+            Guarda i Post
           </Link>
         </div>
       </section>
 
-      {/* Feed Preview Section */}
-      <section id="feed" className="max-w-xl mx-auto px-4 pb-24 space-y-8">
-        <div className="border-b border-white/10 pb-4 text-center">
-          <h2 className="text-xl font-semibold text-zinc-100">Ultime storie dal mondo</h2>
-          <p className="text-xs text-zinc-400">Scatti e itinerari condivisi dai viaggiatori</p>
+      {/* Feed Card */}
+      <section id="feed" className="relative z-10 mx-auto max-w-xl space-y-6 px-4 pb-24">
+        <div className="flex items-center justify-between border-b border-slate-800/80 pb-4">
+          <div>
+            <h2 className="text-lg font-bold text-white">Storie recenti</h2>
+            <p className="text-xs text-slate-400">Memorie e foto condivise dai viaggiatori</p>
+          </div>
+          <Link href="/register" className="text-xs text-sky-400 hover:underline">
+            Condividi una tappa →
+          </Link>
         </div>
 
-        {mockPosts.map((post) => (
+        {mockTravelPosts.map((post) => (
           <article
             key={post.id}
-            className="rounded-2xl border border-white/10 bg-zinc-900/60 backdrop-blur-md overflow-hidden shadow-xl"
+            className="overflow-hidden rounded-2xl border border-slate-800/80 bg-slate-900/60 shadow-xl backdrop-blur-md"
           >
             {/* Header del post */}
-            <div className="p-4 flex items-center justify-between">
+            <div className="flex items-center justify-between p-4">
               <div className="flex items-center gap-3">
-                <img
-                  src={post.avatar}
-                  alt={post.author}
-                  className="w-10 h-10 rounded-full object-cover border border-white/20"
-                />
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-sky-500 to-indigo-500 text-xs font-bold uppercase text-white">
+                  {post.author.charAt(0)}
+                </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-zinc-100 hover:underline cursor-pointer">
+                  <h3 className="text-sm font-semibold text-slate-100">
                     @{post.author}
                   </h3>
-                  <p className="text-xs text-emerald-400 flex items-center gap-1">
+                  <p className="text-xs text-sky-400">
                     📍 {post.location}
                   </p>
                 </div>
               </div>
-              <span className="text-xs text-zinc-400">{post.date}</span>
+              <span className="text-xs text-slate-400">{post.date}</span>
             </div>
 
-            {/* Immagine del post */}
-            <div className="relative aspect-square w-full bg-black/40 overflow-hidden">
+            {/* Immagine */}
+            <div className="aspect-square w-full overflow-hidden bg-slate-950">
               <img
                 src={post.image}
                 alt={post.location}
-                className="w-full h-full object-cover transition-transform duration-500 hover:scale-[1.02]"
+                className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
               />
             </div>
 
-            {/* Azioni & Didascalia */}
-            <div className="p-4 space-y-2">
-              <div className="flex items-center gap-4 text-zinc-300">
-                <button className="hover:text-red-400 transition-colors flex items-center gap-1 text-sm">
-                  ❤️ <span>{post.likes}</span>
+            {/* Azioni e Didascalia */}
+            <div className="space-y-2 p-4">
+              <div className="flex items-center gap-4 text-xs font-medium text-slate-300">
+                <button className="transition hover:text-red-400">
+                  ❤️ {post.likes} Mi piace
                 </button>
-                <button className="hover:text-emerald-400 transition-colors text-sm">
+                <button className="transition hover:text-sky-400">
                   💬 Commenta
                 </button>
               </div>
-              <p className="text-sm text-zinc-200">
-                <span className="font-semibold text-white mr-2">@{post.author}</span>
+              <p className="text-sm leading-snug text-slate-200">
+                <span className="mr-2 font-semibold text-white">@{post.author}</span>
                 {post.caption}
               </p>
             </div>
