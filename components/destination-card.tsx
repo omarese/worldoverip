@@ -1,17 +1,29 @@
-import type { Destination } from "@/lib/catalog";
-import Link from "next/link";
+import Link from 'next/link';
+import { storyCount, type Destination } from '@/lib/data';
 
 export function DestinationCard({ destination }: { destination: Destination }) {
+  const count = storyCount(destination.slug);
+
   return (
     <Link
-      href={`/esim/${destination.slug}`}
-      className="group rounded-2xl border border-line bg-panel p-5 transition hover:-translate-y-0.5 hover:border-accent"
+      href={`/destinations/${destination.slug}`}
+      className="group bg-white hover:shadow-md transition-all rounded-xl px-4 py-3 flex items-center space-x-3 shadow-sm"
     >
-      <p className="text-2xl">{destination.flag}</p>
-      <h3 className="mt-3 font-serif text-xl text-ink">{destination.name}</h3>
-      <p className="mt-1 text-sm text-muted">{destination.region}</p>
-      <p className="mt-3 line-clamp-2 text-sm text-ink/80">{destination.summary}</p>
-      <p className="mt-4 text-sm text-accent group-hover:underline">Compare eSIMs →</p>
+      <span
+        aria-hidden
+        className="w-11 h-11 rounded-full flex items-center justify-center text-xl shrink-0"
+        style={{ background: destination.tint }}
+      >
+        {destination.flag}
+      </span>
+      <span className="min-w-0">
+        <span className="block font-extrabold text-xs text-slate-900 group-hover:text-sky-600 transition">
+          {destination.name}
+        </span>
+        <span className="block text-[11px] font-medium text-slate-500">
+          {count} {count === 1 ? 'story' : 'stories'}
+        </span>
+      </span>
     </Link>
   );
 }

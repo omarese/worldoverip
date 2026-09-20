@@ -1,35 +1,52 @@
-import Link from "next/link";
-
-const links = [
-  { href: "/destinations", label: "Destinations" },
-  { href: "/providers", label: "Providers" },
-  { href: "/guide", label: "How eSIMs work" },
-];
+import Link from 'next/link';
+import { Globe } from 'lucide-react';
 
 export function SiteHeader() {
   return (
-    <header className="border-b border-line bg-panel/80 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-5 py-4">
-        <Link href="/" className="flex items-baseline gap-2 tracking-tight">
-          <span className="font-serif text-xl font-semibold text-ink">WorldOverIP</span>
-          <span className="hidden text-xs uppercase tracking-[0.18em] text-muted sm:inline">
-            eSIM comparison
-          </span>
+    <header className="w-full bg-[#FAF7F2] relative z-30 py-4 px-6 md:px-12 flex items-center justify-between border-b border-slate-200/50">
+
+      {/* Logo */}
+      <Link href="/" className="flex items-center space-x-2">
+        <Globe className="w-6 h-6 text-sky-600" />
+        <span className="text-xl font-black text-slate-900 tracking-tight">
+          WorldOverIP
+        </span>
+      </Link>
+
+      {/* Navigation Links & Account Buttons */}
+      <div className="flex items-center space-x-6 text-xs font-bold text-slate-800">
+        <Link
+          href="/explore"
+          className="hover:text-sky-600 transition hidden sm:inline-block"
+        >
+          Explore
         </Link>
-        <nav className="flex items-center gap-5 text-sm text-ink">
-          {links.map((link) => (
-            <Link key={link.href} href={link.href} className="hover:text-accent">
-              {link.label}
-            </Link>
-          ))}
+        <Link
+          href="/destinations"
+          className="hover:text-sky-600 transition hidden sm:inline-block"
+        >
+          Destinations
+        </Link>
+
+        {/* Login / Register */}
+        <div className="flex items-center space-x-2">
           <Link
-            href="/destinations"
-            className="rounded-full bg-ink px-3.5 py-1.5 text-sm text-highlight hover:bg-accent-dark"
+            href="/login"
+            className="bg-white border border-slate-300 rounded-full px-3.5 py-2 hover:bg-slate-50 transition shadow-sm text-slate-900"
           >
-            Compare plans
+            Login
           </Link>
-        </nav>
+          <Link
+            href="/register"
+            className="bg-slate-900 border border-slate-900 rounded-full px-3.5 py-2 hover:bg-slate-700 transition shadow-sm text-white"
+          >
+            Register
+          </Link>
+        </div>
       </div>
+
     </header>
   );
 }
+
+export default SiteHeader;
