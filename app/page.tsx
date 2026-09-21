@@ -1,8 +1,13 @@
 import Link from 'next/link';
-import { BookOpen, MapPin, Users, Heart, PenLine } from 'lucide-react';
+import { BookOpen, MapPin, Users, Heart, PenLine, Camera } from 'lucide-react';
 import { StoryFeed } from '@/components/story-feed';
 import { DestinationCard } from '@/components/destination-card';
-import { destinations, stories } from '@/lib/data';
+import { UserAvatar } from '@/components/user-avatar';
+import { destinations, stories, getDestination } from '@/lib/data';
+import { getCurrentUser } from '@/lib/auth';
+import { createClient } from '@/lib/supabase/server';
+import { isSupabaseConfigured } from '@/lib/supabase/config';
+import { formatLongDate, publicUrl, type Post, type Profile } from '@/lib/social';
 
 const features = [
   { Icon: BookOpen, text: 'Write diary-style posts for every day of your trip' },
@@ -11,17 +16,58 @@ const features = [
   { Icon: Heart, text: 'Like the stories that make you want to pack your bag' },
 ];
 
-export default function HomePage() {
+type FeedPost = Post & {
+  author: Pick<Profile, 'id' | 'username' | 'avatar_path'>;
+};
+
+async function loadFeedPosts(limit = 40): Promise<FeedPost[]> {
+  if (!isSupabaseConfigured) return [];
+
+  const supabase = await createClient();
+  const { data: posts } = await supabase
+    .from('posts')
+    .select('id, user_id, image_path, caption, destination_slug, created_at')
+    .order('created_at', { ascending: false })
+    .limit(limit);
+
+  if (!posts?.length) return [];
+
+  const userIds = [...new Set(posts.map((p) => p.user_id))];
+  const { data: profiles } = await supabase
+    .from('profiles')
+    .select('id, username, avatar_path')
+    .in('id', userIds);
+
+  const byId = new Map((profiles ?? []).map((p) => [p.id, p]));
+
+  return posts
+    .map((post) => {
+      const author = byId.get(post.user_id);
+      if (!author) return null;
+      return {
+        ...(post as Post),
+        author: {
+          id: author.id,
+          username: author.username,
+          avatar_path: author.avatar_path,
+        },
+      };
+    })
+    .filter((p): p is FeedPost => p !== null);
+}
+
+function MarketingHome() {
   return (
     <div className="pb-20">
-
       {/* HERO SECTION WITH HEADLINE */}
       <section className="relative z-10 pt-12 pb-6 px-6 max-w-5xl mx-auto text-center space-y-3">
         <h1 className="text-3xl md:text-5xl font-black tracking-tight leading-tight text-slate-900">
-          Share your journey, wherever you travel,<br className="hidden md:block" /> and inspire the next trip
+          Share your journey, wherever you travel,
+          <br className="hidden md:block" /> and inspire the next trip
         </h1>
         <p className="text-slate-600 font-medium text-sm md:text-base">
-          Keep a travel diary, share your favourite places and discover stories from travellers around the world.
+          Keep a travel diary, share your favourite places and discover stories from travellers
+          around the world.
         </p>
       </section>
 
@@ -50,7 +96,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* COMPACT BLUE FEATURE BANNER */}
+      {/* FEATURES */}
       <section className="relative z-10 max-w-5xl mx-auto px-6 my-6">
         <div className="bg-[#78C8DB] rounded-[28px] p-6 md:p-10 text-slate-900 relative overflow-hidden shadow-sm">
           <h2 className="text-xl md:text-3xl font-black text-center mb-8 tracking-tight leading-tight">
@@ -116,7 +162,8 @@ export default function HomePage() {
             Got a trip worth sharing?
           </h2>
           <p className="mt-2 text-sm font-medium text-slate-600 max-w-xl mx-auto">
-            Create a free account and start your travel diary. Your next trip could be someone else’s inspiration.
+            Create a free account and start your travel diary. Your next trip could be someone
+            else’s inspiration.
           </p>
           <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
@@ -134,7 +181,140 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
     </div>
   );
+}
+
+function FeedHome({ posts }: { posts: FeedPost[] }) {
+  return (
+    <div className="max-w-xl mx-auto px-4 sm:px-6 pt-8 pb-20">
+      <div className="flex items-center justify-between gap-3 mb-6">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-black tracking-tight text-slate-900">Home</h1>
+          <p className="text-sm font-medium text-slate-600 mt-0.5">
+            Latest posts from travellers around the world
+          </p>
+        </div>
+        <Link
+          href="/new"
+          className="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-slate-700 text-white rounded-full px-4 py-2.5 text-xs font-black shadow-sm transition shrink-0"
+        >
+          <PenLine className="w-3.5 h-3.5" />
+          <span>New post</span>
+        </Link>
+      </div>
+
+      {posts.length === 0 ? (
+        <div className="bg-white rounded-[28px] border border-slate-200/80 shadow-sm p-10 text-center">
+          <div className="mx-auto w-16 h-16 rounded-full border-2 border-slate-900 flex items-center justify-center mb-4">
+            <Camera className="w-7 h-7 text-slate-900" />
+          </div>
+          <h2 className="text-xl font-black tracking-tight text-slate-900">No posts yet</h2>
+          <p className="mt-2 text-sm font-medium text-slate-600 max-w-sm mx-auto">
+            Be the first to share a photo from your trip. Your post will show up here for everyone.
+          </p>
+          <Link
+            href="/new"
+            className="mt-6 inline-flex items-center gap-1.5 bg-slate-900 hover:bg-slate-700 text-white rounded-full px-6 py-3 text-sm font-black shadow-sm transition"
+          >
+            <PenLine className="w-4 h-4" />
+            Share your first photo
+          </Link>
+        </div>
+      ) : (
+        <div className="space-y-5">
+          {posts.map((post) => {
+            const destination = post.destination_slug
+              ? getDestination(post.destination_slug)
+              : undefined;
+            const imageUrl = publicUrl('posts', post.image_path);
+
+            return (
+              <article
+                key={post.id}
+                className="bg-white rounded-[24px] border border-slate-200/80 shadow-sm overflow-hidden"
+              >
+                {/* Author row */}
+                <div className="flex items-center justify-between gap-3 px-4 py-3">
+                  <Link
+                    href={`/u/${post.author.username}`}
+                    className="flex items-center gap-2.5 min-w-0 hover:opacity-80 transition"
+                  >
+                    <UserAvatar
+                      username={post.author.username}
+                      url={publicUrl('avatars', post.author.avatar_path)}
+                      className="w-9 h-9 text-xs"
+                    />
+                    <div className="min-w-0">
+                      <p className="text-sm font-extrabold text-slate-900 truncate">
+                        @{post.author.username}
+                      </p>
+                      <p className="text-[11px] font-medium text-slate-500">
+                        {formatLongDate(post.created_at)}
+                      </p>
+                    </div>
+                  </Link>
+                  {destination && (
+                    <Link
+                      href={`/destinations/${destination.slug}`}
+                      className="inline-flex items-center gap-1 text-[11px] font-black uppercase tracking-wider text-sky-700 hover:text-sky-900 shrink-0"
+                    >
+                      <MapPin className="w-3 h-3" />
+                      {destination.name}
+                    </Link>
+                  )}
+                </div>
+
+                {/* Image */}
+                <Link href={`/p/${post.id}`} className="block bg-slate-100">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={imageUrl ?? ''}
+                    alt={post.caption ? post.caption.slice(0, 100) : 'Travel photo'}
+                    loading="lazy"
+                    className="w-full aspect-square object-cover"
+                  />
+                </Link>
+
+                {/* Caption */}
+                {post.caption ? (
+                  <div className="px-4 py-3">
+                    <p className="text-sm font-medium text-slate-800 leading-relaxed">
+                      <Link
+                        href={`/u/${post.author.username}`}
+                        className="font-extrabold text-slate-900 hover:text-sky-700 transition"
+                      >
+                        @{post.author.username}
+                      </Link>{' '}
+                      {post.caption}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="px-4 py-2">
+                    <Link
+                      href={`/p/${post.id}`}
+                      className="text-xs font-bold text-slate-500 hover:text-sky-600 transition"
+                    >
+                      View post
+                    </Link>
+                  </div>
+                )}
+              </article>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default async function HomePage() {
+  const user = await getCurrentUser();
+
+  if (user) {
+    const posts = await loadFeedPosts();
+    return <FeedHome posts={posts} />;
+  }
+
+  return <MarketingHome />;
 }
