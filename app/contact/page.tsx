@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { Mail } from 'lucide-react';
 import { InfoPage, InfoSection } from '@/components/info-page';
 
 export const metadata: Metadata = {
@@ -9,14 +8,10 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <InfoPage title="Contact" intro="Questions, feedback or something to report? We’d love to hear from you.">
+    <InfoPage title="Contact" intro="Questions, feedback or something to report? We would love to hear from you.">
       <InfoSection title="Email us">
-        <a
-          href="mailto:support@worldoverip.com"
-          className="inline-flex items-center space-x-2 font-bold text-slate-900 hover:text-sky-600 transition"
-        >
-          <Mail className="w-4 h-4 text-sky-600" />
-          <span>support@worldoverip.com</span>
+        <a href="mailto:support@worldoverip.com" className="font-bold text-slate-900 hover:text-sky-600 transition">
+          support@worldoverip.com
         </a>
       </InfoSection>
     </InfoPage>

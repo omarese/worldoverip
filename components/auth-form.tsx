@@ -1,22 +1,28 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, type FormEvent } from 'react';
+import { useActionState, useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
+import { login } from '@/app/login/actions';
+import { register } from '@/app/register/actions';
+import type { AuthState } from '@/lib/auth-state';
 
 const inputClass =
   'w-full rounded-full border border-slate-300 bg-white px-5 py-3 text-sm font-bold text-slate-900 placeholder:text-slate-400 placeholder:font-semibold outline-none focus:border-slate-500 transition';
 
-export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
+export function AuthForm({
+  mode,
+  initialError,
+}: {
+  mode: 'login' | 'register';
+  initialError?: string;
+}) {
   const isRegister = mode === 'register';
   const [showPassword, setShowPassword] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    // TODO: send the form values (new FormData(event.currentTarget)) to your auth backend here.
-    setSubmitted(true);
-  }
+  const [state, formAction, isPending] = useActionState<AuthState, FormData>(
+    isRegister ? register : login,
+    { error: initialError },
+  );
 
   return (
     <div className="max-w-md mx-auto px-6 pt-12 pb-20">
@@ -30,7 +36,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
             : 'Login to keep writing your travel diary.'}
         </p>
 
-        <form onSubmit={handleSubmit} className="mt-7 space-y-4">
+        <form action={formAction} className="mt-7 space-y-4">
           {isRegister && (
             <div>
               <label htmlFor="username" className="block text-xs font-black text-slate-900 mb-1.5">
@@ -42,6 +48,8 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
                 type="text"
                 required
                 minLength={3}
+                maxLength={20}
+                defaultValue={state.values?.username ?? ''}
                 autoComplete="username"
                 placeholder="e.g. mika.roams"
                 className={inputClass}
@@ -58,6 +66,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
               name="email"
               type="email"
               required
+              defaultValue={state.values?.email ?? ''}
               autoComplete="email"
               placeholder="you@example.com"
               className={inputClass}
@@ -109,13 +118,18 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
 
           <button
             type="submit"
-            className="w-full bg-slate-900 hover:bg-slate-700 text-white font-black text-sm rounded-full px-6 py-3.5 shadow-sm transition"
+            disabled={isPending}
+            className="w-full bg-slate-900 hover:bg-slate-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-black text-sm rounded-full px-6 py-3.5 shadow-sm transition"
           >
-            {isRegister ? 'Create account' : 'Login'}
+            {isPending ? 'Please wait…' : isRegister ? 'Create account' : 'Login'}
           </button>
 
-          <p role="status" aria-live="polite" className="text-xs font-bold text-sky-700 min-h-4">
-            {submitted ? 'Accounts are not open just yet. Please check back soon!' : ''}
+          <p
+            role="status"
+            aria-live="polite"
+            className={`text-xs font-bold min-h-4 ${state.error ? 'text-rose-600' : 'text-sky-700'}`}
+          >
+            {state.error ?? state.message ?? ''}
           </p>
         </form>
 
