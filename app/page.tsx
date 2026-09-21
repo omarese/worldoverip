@@ -3,6 +3,7 @@ import { BookOpen, MapPin, Users, Heart, PenLine, Camera } from 'lucide-react';
 import { StoryFeed } from '@/components/story-feed';
 import { DestinationCard } from '@/components/destination-card';
 import { UserAvatar } from '@/components/user-avatar';
+import { LikeButton } from '@/components/like-button';
 import { destinations, stories, getDestination } from '@/lib/data';
 import { getCurrentUser } from '@/lib/auth';
 import { createClient } from '@/lib/supabase/server';
@@ -18,9 +19,11 @@ const features = [
 
 type FeedPost = Post & {
   author: Pick<Profile, 'id' | 'username' | 'avatar_path'>;
+  likeCount: number;
+  likedByMe: boolean;
 };
 
-async function loadFeedPosts(limit = 40): Promise<FeedPost[]> {
+async function loadFeedPosts(viewerId?: string, limit = 40): Promise<FeedPost[]> {
   if (!isSupabaseConfigured) return [];
 
   const supabase = await createClient();
@@ -33,12 +36,20 @@ async function loadFeedPosts(limit = 40): Promise<FeedPost[]> {
   if (!posts?.length) return [];
 
   const userIds = [...new Set(posts.map((p) => p.user_id))];
-  const { data: profiles } = await supabase
-    .from('profiles')
-    .select('id, username, avatar_path')
-    .in('id', userIds);
+  const postIds = posts.map((p) => p.id);
+
+  const [{ data: profiles }, { data: likes }] = await Promise.all([
+    supabase.from('profiles').select('id, username, avatar_path').in('id', userIds),
+    supabase.from('post_likes').select('post_id, user_id').in('post_id', postIds),
+  ]);
 
   const byId = new Map((profiles ?? []).map((p) => [p.id, p]));
+  const likeCountByPost = new Map<string, number>();
+  const likedByMe = new Set<string>();
+  for (const like of likes ?? []) {
+    likeCountByPost.set(like.post_id, (likeCountByPost.get(like.post_id) ?? 0) + 1);
+    if (viewerId && like.user_id === viewerId) likedByMe.add(like.post_id);
+  }
 
   return posts
     .map((post) => {
@@ -51,6 +62,8 @@ async function loadFeedPosts(limit = 40): Promise<FeedPost[]> {
           username: author.username,
           avatar_path: author.avatar_path,
         },
+        likeCount: likeCountByPost.get(post.id) ?? 0,
+        likedByMe: likedByMe.has(post.id),
       };
     })
     .filter((p): p is FeedPost => p !== null);
@@ -59,7 +72,6 @@ async function loadFeedPosts(limit = 40): Promise<FeedPost[]> {
 function MarketingHome() {
   return (
     <div className="pb-20">
-      {/* HERO SECTION WITH HEADLINE */}
       <section className="relative z-10 pt-12 pb-6 px-6 max-w-5xl mx-auto text-center space-y-3">
         <h1 className="text-3xl md:text-5xl font-black tracking-tight leading-tight text-slate-900">
           Share your journey, wherever you travel,
@@ -71,11 +83,9 @@ function MarketingHome() {
         </p>
       </section>
 
-      {/* CALL TO ACTION ROW */}
       <section className="relative z-20 pb-10 px-4 max-w-[96%] mx-auto">
         <div className="flex items-center gap-4">
           <div className="flex-1 h-[1px] bg-slate-300/80 hidden md:block" />
-
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mx-auto">
             <Link
               href="/register"
@@ -91,18 +101,15 @@ function MarketingHome() {
               Explore stories
             </Link>
           </div>
-
           <div className="flex-1 h-[1px] bg-slate-300/80 hidden md:block" />
         </div>
       </section>
 
-      {/* FEATURES */}
       <section className="relative z-10 max-w-5xl mx-auto px-6 my-6">
         <div className="bg-[#78C8DB] rounded-[28px] p-6 md:p-10 text-slate-900 relative overflow-hidden shadow-sm">
           <h2 className="text-xl md:text-3xl font-black text-center mb-8 tracking-tight leading-tight">
             Why do travellers love sharing on WorldOverIP?
           </h2>
-
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map(({ Icon, text }) => (
               <div key={text} className="flex flex-col items-center text-center space-y-3">
@@ -116,7 +123,6 @@ function MarketingHome() {
         </div>
       </section>
 
-      {/* COMPACT GREEN STORIES CONTAINER */}
       <section className="relative z-10 max-w-5xl mx-auto px-6 my-8">
         <StoryFeed
           stories={stories}
@@ -127,7 +133,6 @@ function MarketingHome() {
         />
       </section>
 
-      {/* PEACH DESTINATIONS CONTAINER */}
       <section className="relative z-10 max-w-5xl mx-auto px-6 my-8">
         <div className="bg-[#FCD8B5] rounded-[28px] p-6 md:p-8 text-slate-900 shadow-sm">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-6">
@@ -146,7 +151,6 @@ function MarketingHome() {
               View all destinations
             </Link>
           </div>
-
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
             {destinations.slice(0, 6).map((destination) => (
               <DestinationCard key={destination.slug} destination={destination} />
@@ -155,7 +159,6 @@ function MarketingHome() {
         </div>
       </section>
 
-      {/* JOIN CALL TO ACTION */}
       <section className="relative z-10 max-w-5xl mx-auto px-6 my-8">
         <div className="bg-white rounded-[28px] border border-slate-200/80 shadow-sm p-6 md:p-10 text-center">
           <h2 className="text-xl md:text-3xl font-black tracking-tight text-slate-900">
@@ -234,7 +237,6 @@ function FeedHome({ posts }: { posts: FeedPost[] }) {
                 key={post.id}
                 className="bg-white rounded-[24px] border border-slate-200/80 shadow-sm overflow-hidden"
               >
-                {/* Author row */}
                 <div className="flex items-center justify-between gap-3 px-4 py-3">
                   <Link
                     href={`/u/${post.author.username}`}
@@ -265,7 +267,6 @@ function FeedHome({ posts }: { posts: FeedPost[] }) {
                   )}
                 </div>
 
-                {/* Image */}
                 <Link href={`/p/${post.id}`} className="block bg-slate-100">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
@@ -276,7 +277,20 @@ function FeedHome({ posts }: { posts: FeedPost[] }) {
                   />
                 </Link>
 
-                {/* Caption */}
+                <div className="px-4 pt-3 flex items-center gap-3">
+                  <LikeButton
+                    postId={post.id}
+                    initialCount={post.likeCount}
+                    initialLiked={post.likedByMe}
+                  />
+                  <Link
+                    href={`/p/${post.id}`}
+                    className="text-[11px] font-extrabold text-slate-500 hover:text-sky-600 transition"
+                  >
+                    Comment
+                  </Link>
+                </div>
+
                 {post.caption ? (
                   <div className="px-4 py-3">
                     <p className="text-sm font-medium text-slate-800 leading-relaxed">
@@ -290,7 +304,7 @@ function FeedHome({ posts }: { posts: FeedPost[] }) {
                     </p>
                   </div>
                 ) : (
-                  <div className="px-4 py-2">
+                  <div className="px-4 pb-3">
                     <Link
                       href={`/p/${post.id}`}
                       className="text-xs font-bold text-slate-500 hover:text-sky-600 transition"
@@ -312,7 +326,7 @@ export default async function HomePage() {
   const user = await getCurrentUser();
 
   if (user) {
-    const posts = await loadFeedPosts();
+    const posts = await loadFeedPosts(user.id);
     return <FeedHome posts={posts} />;
   }
 

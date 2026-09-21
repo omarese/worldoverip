@@ -22,7 +22,16 @@ export const USERNAME_HELP =
   'Username must be 3 to 20 characters: letters, numbers, dots or underscores.';
 export const BIO_MAX = 150;
 export const CAPTION_MAX = 500;
+export const COMMENT_MAX = 500;
 export const CHANGE_LIMIT_DAYS = 30;
+
+export type PostComment = {
+  id: string;
+  post_id: string;
+  user_id: string;
+  body: string;
+  created_at: string;
+};
 
 // Public web address of a photo in one of the storage buckets.
 export function publicUrl(bucket: 'avatars' | 'posts', path?: string | null) {

@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { Camera, LayoutGrid } from 'lucide-react';
 import { AvatarUploader } from '@/components/avatar-uploader';
 import { BioEditor } from '@/components/bio-editor';
+import { FollowButton } from '@/components/follow-button';
 import { UserAvatar } from '@/components/user-avatar';
 import { getCurrentUser } from '@/lib/auth';
 import { createClient } from '@/lib/supabase/server';
@@ -45,9 +46,29 @@ export default async function ProfilePage({ params }: PageProps<'/u/[username]'>
   const isOwner = viewer?.id === profile.id;
   const avatarUrl = publicUrl('avatars', profile.avatar_path);
 
+  const { count: followersCount } = await supabase
+    .from('follows')
+    .select('*', { count: 'exact', head: true })
+    .eq('following_id', profile.id);
+
+  const { count: followingCount } = await supabase
+    .from('follows')
+    .select('*', { count: 'exact', head: true })
+    .eq('follower_id', profile.id);
+
+  let initialFollowing = false;
+  if (viewer && !isOwner) {
+    const { data: followRow } = await supabase
+      .from('follows')
+      .select('follower_id')
+      .eq('follower_id', viewer.id)
+      .eq('following_id', profile.id)
+      .maybeSingle();
+    initialFollowing = Boolean(followRow);
+  }
+
   return (
     <div className="max-w-4xl mx-auto px-6 pt-10 pb-20">
-      {/* Profile header */}
       <header className="flex flex-col sm:flex-row items-center sm:items-start gap-6 sm:gap-12">
         <div className="shrink-0">
           {isOwner ? (
@@ -66,7 +87,7 @@ export default async function ProfilePage({ params }: PageProps<'/u/[username]'>
             <h1 className="text-xl md:text-2xl font-black tracking-tight text-slate-900 break-all">
               {profile.username}
             </h1>
-            {isOwner && (
+            {isOwner ? (
               <>
                 <Link
                   href="/settings/profile"
@@ -81,12 +102,25 @@ export default async function ProfilePage({ params }: PageProps<'/u/[username]'>
                   Add post
                 </Link>
               </>
+            ) : viewer ? (
+              <FollowButton targetUserId={profile.id} initialFollowing={initialFollowing} />
+            ) : (
+              <Link
+                href="/login"
+                className="bg-slate-900 border border-slate-900 rounded-full px-4 py-2 text-xs font-bold text-white hover:bg-slate-700 transition shadow-sm"
+              >
+                Login to follow
+              </Link>
             )}
           </div>
 
           <p className="text-sm font-medium text-slate-700">
             <span className="font-black text-slate-900">{posts.length}</span>{' '}
             {posts.length === 1 ? 'post' : 'posts'}
+            <span className="mx-2 text-slate-400">·</span>
+            <span className="font-black text-slate-900">{followersCount ?? 0}</span> followers
+            <span className="mx-2 text-slate-400">·</span>
+            <span className="font-black text-slate-900">{followingCount ?? 0}</span> following
             <span className="mx-2 text-slate-400">·</span>
             Joined {formatMonthYear(profile.created_at)}
           </p>
@@ -95,7 +129,6 @@ export default async function ProfilePage({ params }: PageProps<'/u/[username]'>
         </div>
       </header>
 
-      {/* Tab row */}
       <div className="mt-10 border-t border-slate-300/70 flex justify-center">
         <div className="-mt-px flex items-center space-x-2 border-t-2 border-slate-900 pt-3 text-xs font-extrabold tracking-wider uppercase text-slate-900">
           <LayoutGrid className="w-4 h-4" />
@@ -103,7 +136,6 @@ export default async function ProfilePage({ params }: PageProps<'/u/[username]'>
         </div>
       </div>
 
-      {/* Posts */}
       {posts.length > 0 ? (
         <div className="mt-6 grid grid-cols-3 gap-1.5 sm:gap-3">
           {posts.map((post) => (

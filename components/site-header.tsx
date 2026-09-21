@@ -3,6 +3,7 @@ import { Globe } from 'lucide-react';
 import { getCurrentUser } from '@/lib/auth';
 import { signOut } from '@/app/auth/actions';
 import { UserAvatar } from '@/components/user-avatar';
+import { ProfileSearch } from '@/components/profile-search';
 
 export async function SiteHeader() {
   const user = await getCurrentUser();
@@ -10,7 +11,6 @@ export async function SiteHeader() {
   return (
     <header className="w-full bg-[#FAF7F2] relative z-30 py-4 px-6 md:px-12 flex items-center justify-between border-b border-slate-200/50">
 
-      {/* Logo */}
       <Link href="/" className="flex items-center space-x-2">
         <Globe className="w-6 h-6 text-sky-600" />
         <span className="text-xl font-black text-slate-900 tracking-tight">
@@ -18,8 +18,7 @@ export async function SiteHeader() {
         </span>
       </Link>
 
-      {/* Navigation Links & Account Buttons */}
-      <div className="flex items-center space-x-6 text-xs font-bold text-slate-800">
+      <div className="flex items-center space-x-4 sm:space-x-6 text-xs font-bold text-slate-800">
         <Link
           href="/explore"
           className="hover:text-sky-600 transition hidden sm:inline-block"
@@ -34,8 +33,8 @@ export async function SiteHeader() {
         </Link>
 
         {user ? (
-          /* Logged in: username + Logout */
           <div className="flex items-center space-x-2">
+            <ProfileSearch />
             {user.username && (
               <Link
                 href={`/u/${user.username}`}
@@ -56,7 +55,6 @@ export async function SiteHeader() {
             </form>
           </div>
         ) : (
-          /* Logged out: Login / Register */
           <div className="flex items-center space-x-2">
             <Link
               href="/login"
