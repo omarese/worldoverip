@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Globe } from 'lucide-react';
 import { getCurrentUser } from '@/lib/auth';
 import { signOut } from '@/app/auth/actions';
+import { UserAvatar } from '@/components/user-avatar';
 
 export async function SiteHeader() {
   const user = await getCurrentUser();
@@ -36,9 +37,14 @@ export async function SiteHeader() {
           /* Logged in: username + Logout */
           <div className="flex items-center space-x-2">
             {user.username && (
-              <span className="hidden sm:inline-block font-extrabold text-slate-900">
-                @{user.username}
-              </span>
+              <Link
+                href={`/u/${user.username}`}
+                aria-label="Your profile"
+                className="flex items-center space-x-2 font-extrabold text-slate-900 hover:text-sky-600 transition"
+              >
+                <UserAvatar username={user.username} url={user.avatarUrl} />
+                <span className="hidden sm:inline-block">@{user.username}</span>
+              </Link>
             )}
             <form action={signOut}>
               <button
